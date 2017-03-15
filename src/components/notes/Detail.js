@@ -138,12 +138,12 @@ class NotesDetail extends Component {
           <form onSubmit={this.handleSubmit}>
               <p className="control">
                 <textarea className="textarea" onChange={this.handleChange} defaultValue={this.state.body} />
-                { this.state.error && this.state.error }
+                { this.state.error && <p><span className="help is-danger">{this.state.error}</span></p> }
               </p>
 
               <div className="control is-grouped">
                 <p className="control">
-                  <button onClick={this.handleRemove} className="button">Delete</button>
+                  <button onClick={this.handleRemove} className="button is-danger is-outlined">Delete</button>
                 </p>
                 <p className="control">
                   <input className="button is-primary" type="submit" value="Update" />

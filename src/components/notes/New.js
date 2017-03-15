@@ -76,7 +76,7 @@ class NotesNew extends Component {
           <form onSubmit={this.handleSubmit}>
             <p className="control">
               <textarea className="textarea" value={this.state.body} onChange={this.handleChange} />
-              { this.state.error && <strong>{this.state.error}</strong> }
+              { this.state.error && <p><span className="help is-danger">{this.state.error}</span></p> }
             </p>
 
             <div className="control is-grouped">
