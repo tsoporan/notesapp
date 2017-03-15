@@ -4,29 +4,25 @@
 
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { removeNote, updateNote } from '../../actions/notes';
 import { Redirect } from 'react-router-dom';
 import fetch from 'isomorphic-fetch';
+import { removeNote, updateNote } from '../../actions/notes';
 import { API_BASE_URL } from '../../config';
 import '../../styles/Notes.css';
 
 
 const getNote = (notes, id) => {
   // Returns a specific note
-  return notes.find((note) => {
-    return note._id === id;
-  });
-
+  return notes.find(note => note._id === id);
 };
 
 const mapStateToProps = (state, ownProps) => {
-
   // Comes from router provided props
   const noteId = ownProps.match.params.id;
 
   return {
-    note: getNote(state.notes, noteId)
-  }
+    note: getNote(state.notes, noteId),
+  };
 };
 
 class NotesDetail extends Component {
@@ -42,17 +38,11 @@ class NotesDetail extends Component {
       error: '',
       body: props.note.body,
       newText: '',
-    }
+    };
   }
-
 
   handleSubmit(e) {
     e.preventDefault();
-
-    // TODO: store updated note in store update note in store
-    // Update to server first
-
-    console.log('state', this.state);
 
     if (!this.state.newText.length) {
       this.setState({ error: 'No text to update' });
@@ -61,36 +51,34 @@ class NotesDetail extends Component {
 
     // Only if text differs do we save
     if (this.state.newText === this.state.body) {
-      this.setState({ error: 'Text hasn\'t changed!' })
+      this.setState({ error: 'Text hasn\'t changed!' });
       return;
     }
 
     const dispatch = this.props.dispatch;
     const noteId = this.props.match.params.id;
     const headers = new Headers({
-      'Content-Type': 'application/x-www-form-urlencoded'
+      'Content-Type': 'application/x-www-form-urlencoded',
     });
 
 
     // Update server then update the store
     fetch(`${API_BASE_URL}/notes/${noteId}`, {
       method: 'PUT',
-      headers: headers,
-      body: "text="+encodeURIComponent(this.state.newText)
+      headers,
+      body: 'text=' + encodeURIComponent(this.state.newText),
     })
     .then(response => response.json())
-    .then((json) => {
-
+    .then(() => {
       dispatch(
         updateNote(
           noteId,
-          this.state.newText
-        )
-      )
+          this.state.newText,
+        ),
+      );
       // Redirect when we're done
       this.setState({ posted: true, error: '' });
     });
-
   }
 
   handleChange(e) {
@@ -101,29 +89,28 @@ class NotesDetail extends Component {
   handleRemove(e) {
     e.preventDefault();
 
-    const dispatch = this.props.dispatch; 
+    const dispatch = this.props.dispatch;
     const noteId = this.props.match.params.id;
     const headers = new Headers({
-      'Content-Type': 'application/x-www-form-urlencoded'
-    })
+      'Content-Type': 'application/x-www-form-urlencoded',
+    });
 
     // Remove from server first then update the store
     fetch(`${API_BASE_URL}/notes/${noteId}`, {
       method: 'DELETE',
-      headers: headers
+      headers,
     })
       .then(response => response.json())
-      .then((json) => {
+      .then(() => {
         dispatch(
           removeNote(
-            noteId
-          )
-        )
+            noteId,
+          ),
+        );
 
         // Redirect when we're done
-        this.setState({ posted: true })
+        this.setState({ posted: true });
       });
-
   }
 
   render() {
@@ -136,19 +123,30 @@ class NotesDetail extends Component {
           <hr />
 
           <form onSubmit={this.handleSubmit}>
-              <p className="control">
-                <textarea className="textarea" onChange={this.handleChange} defaultValue={this.state.body} />
-                { this.state.error && <p><span className="help is-danger">{this.state.error}</span></p> }
-              </p>
+            <p className="control">
+              <textarea
+                className="textarea"
+                onChange={this.handleChange}
+                defaultValue={this.state.body}
+              />
+              { this.state.error &&
+                <p><span className="help is-danger">{this.state.error}</span></p>
+              }
+            </p>
 
-              <div className="control is-grouped">
-                <p className="control">
-                  <button onClick={this.handleRemove} className="button is-danger is-outlined">Delete</button>
-                </p>
-                <p className="control">
-                  <input className="button is-primary" type="submit" value="Update" />
-                </p>
-              </div>
+            <div className="control is-grouped">
+              <p className="control">
+                <button
+                  onClick={this.handleRemove}
+                  className="button is-danger is-outlined"
+                >
+                    Delete
+                </button>
+              </p>
+              <p className="control">
+                <input className="button is-primary" type="submit" value="Update" />
+              </p>
+            </div>
           </form>
 
         </section>
@@ -158,6 +156,12 @@ class NotesDetail extends Component {
     );
   }
 }
+
+NotesDetail.propTypes = {
+  note: React.PropTypes.object.isRequired,
+  dispatch: React.PropTypes.func.isRequired,
+  match: React.PropTypes.object.isRequired,
+};
 
 NotesDetail = connect(mapStateToProps)(NotesDetail);
 

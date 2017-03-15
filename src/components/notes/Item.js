@@ -15,32 +15,30 @@ class NotesListItem extends Component {
   constructor(props) {
     super(props);
 
-    console.log('props', props);
-
     this.handleRemove = this.handleRemove.bind(this);
   }
 
   handleRemove(e) {
-      e.preventDefault();
+    e.preventDefault();
 
-      const dispatch = this.props.dispatch; 
-      const noteId = this.props.id;
-      const headers = new Headers({
-        'Content-Type': 'application/x-www-form-urlencoded'
-      })
+    const dispatch = this.props.dispatch;
+    const noteId = this.props.id;
+    const headers = new Headers({
+      'Content-Type': 'application/x-www-form-urlencoded',
+    });
 
-      // Remove from server then update store
-      fetch(`${API_BASE_URL}/notes/${noteId}`, {
-        method: 'DELETE',
-        headers: headers
-      })
-        .then(response => response.json())
-        .then((json) => {
-          dispatch(
-            removeNote(
-              noteId
-            )
-          )
+    // Remove from server then update store
+    fetch(`${API_BASE_URL}/notes/${noteId}`, {
+      method: 'DELETE',
+      headers,
+    })
+      .then(response => response.json())
+      .then(() => {
+        dispatch(
+          removeNote(
+            noteId,
+          ),
+        );
       });
   }
 
@@ -54,7 +52,9 @@ class NotesListItem extends Component {
 
           <div className="card-content">
             <div className="content">
-                {this.props.body.length > 140 ? this.props.body.substring(0, 140) + ' ...' : this.props.body  }
+              { this.props.body.length > 140 ?
+                this.props.body.substring(0, 140) + ' ...' :
+                this.props.body }
             </div>
           </div>
 
@@ -64,13 +64,15 @@ class NotesListItem extends Component {
           </footer>
         </div>
       </li>
-    )
+    );
   }
 }
 
 NotesListItem.propTypes = {
-  body: React.PropTypes.string,
-  dateCreated: React.PropTypes.string
+  body: React.PropTypes.string.isRequired,
+  dateCreated: React.PropTypes.string.isRequired,
+  dispatch: React.PropTypes.func.isRequired,
+  id: React.PropTypes.string.isRequired,
 };
 
 NotesListItem = connect()(NotesListItem);

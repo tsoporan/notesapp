@@ -11,5 +11,5 @@ import '../node_modules/bulma/css/bulma.css';
 
 ReactDOM.render(
   <Root />,
-  document.getElementById('root')
+  document.getElementById('root'),
 );

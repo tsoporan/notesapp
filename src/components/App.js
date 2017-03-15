@@ -28,9 +28,11 @@ class App extends Component {
                 <Route exact path="/notes/new" component={NotesNew} />
                 <Route path="/notes/:id" component={NotesDetail} />
 
-                <Route render={ ({ location }) => (
-                  <strong> Nothing matched :( </strong>
-                )}/>
+                <Route render={
+                  ({ location }) => (
+                    <strong> Nothing matched {location.pathname} :( </strong>
+                  )}
+                />
               </Switch>
             </div>
 

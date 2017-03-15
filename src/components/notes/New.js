@@ -5,9 +5,9 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { addNote } from  '../../actions/notes';
-import { API_BASE_URL } from '../../config';
 import fetch from 'isomorphic-fetch';
+import { addNote } from '../../actions/notes';
+import { API_BASE_URL } from '../../config';
 import '../../styles/Notes.css';
 
 class NotesNew extends Component {
@@ -15,10 +15,8 @@ class NotesNew extends Component {
   constructor(props) {
     super(props);
 
-    console.log('props', props);
-
     // Keep track of local text changes
-    this.state = {body: '', error: '', posted: false};
+    this.state = { body: '', error: '', posted: false };
 
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -31,38 +29,34 @@ class NotesNew extends Component {
   handleSubmit(e) {
     e.preventDefault();
 
-    // Store on server 
+    // Store on server
     if (!this.state.body) {
       this.setState({ error: 'Nothing to submit!' });
-      return;
     } else {
-
       const dispatch = this.props.dispatch;
 
       const headers = new Headers({
-        'Content-Type': 'application/x-www-form-urlencoded'
-      })
+        'Content-Type': 'application/x-www-form-urlencoded',
+      });
 
       fetch(`${API_BASE_URL}/notes/create/`, {
         method: 'POST',
-        headers: headers,
-        body: "text="+encodeURIComponent(this.state.body)
+        headers,
+        body: 'text=' + encodeURIComponent(this.state.body),
       })
         .then(response => response.json())
         .then((json) => {
-
           dispatch(
             addNote(
               json._id,
               json.body,
-              json.dateCreated
-            )
-          )
+              json.dateCreated,
+            ),
+          );
 
           this.setState({ body: '', error: '', posted: true });
         });
     }
-
   }
 
   render() {
@@ -76,7 +70,9 @@ class NotesNew extends Component {
           <form onSubmit={this.handleSubmit}>
             <p className="control">
               <textarea className="textarea" value={this.state.body} onChange={this.handleChange} />
-              { this.state.error && <p><span className="help is-danger">{this.state.error}</span></p> }
+              { this.state.error &&
+                <p><span className="help is-danger">{this.state.error}</span></p>
+              }
             </p>
 
             <div className="control is-grouped">
@@ -86,13 +82,17 @@ class NotesNew extends Component {
             </div>
           </form>
 
-          { this.state.posted && <Redirect to='/' /> }
+          { this.state.posted && <Redirect to="/" /> }
         </section>
 
       </div>
     );
   }
 }
+
+NotesNew.propTypes = {
+  dispatch: React.PropTypes.func.isRequired,
+};
 
 NotesNew = connect()(NotesNew);
 

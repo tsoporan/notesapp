@@ -2,22 +2,20 @@
  *
  */
 
-function noteApp(state = [] , action) {
-
+function noteApp(state = [], action) {
   switch (action.type) {
     case 'ADD_NOTE':
       // Adds a new note
-
       return Object.assign({}, state, { // We do not mutate state but use a copy instead
-        notes : [
+        notes: [
           ...state.notes,
           // Newest note appended
           {
             _id: action.id,
             body: action.body,
-            dateCreated: action.dateCreated
-          }
-        ]
+            dateCreated: action.dateCreated,
+          },
+        ],
       });
 
     case 'REMOVE_NOTE':
@@ -29,12 +27,10 @@ function noteApp(state = [] , action) {
       }
 
       // Filter only the ones we want
-      const filtered = state.notes.filter((note) => {
-        return note._id !== action.id;
-      });
+      const filtered = state.notes.filter(note => note._id !== action.id);
 
       return Object.assign({}, state, {
-        notes: filtered
+        notes: filtered,
       });
 
     case 'UPDATE_NOTE':
@@ -45,9 +41,7 @@ function noteApp(state = [] , action) {
         return undefined;
       }
 
-      const excluded = state.notes.filter((note) => {
-        return note._id !== action.id;
-      });
+      const excluded = state.notes.filter(note => note._id !== action.id);
 
       return Object.assign({}, state, {
         notes: [
@@ -56,13 +50,13 @@ function noteApp(state = [] , action) {
           {
             _id: action.id,
             body: action.body,
-            dateCreated: action.dateCreated
-          }
-        ]
+            dateCreated: action.dateCreated,
+          },
+        ],
       });
 
     case 'RECEIVE_NOTES':
-      // Received notes from the server, append them 
+      // Received notes from the server, append them
       // to the existing notes.
 
       if (!action.notes) {
@@ -74,7 +68,7 @@ function noteApp(state = [] , action) {
         notes: [
           ...state.notes,
           ...action.notes,
-        ]
+        ],
       });
 
     case 'RECEIVE_NOTE':
@@ -85,7 +79,6 @@ function noteApp(state = [] , action) {
     default:
       return state;
   }
-
 }
 
 export default noteApp;

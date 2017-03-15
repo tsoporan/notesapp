@@ -11,39 +11,39 @@ export const RECEIVE_NOTE = 'RECEIVE_NOTE';
 
 // Action creators
 export function addNote(id, body, dateCreated) {
-  return { 
+  return {
     type: ADD_NOTE,
     id,
     body,
-    dateCreated
-  }
+    dateCreated,
+  };
 }
 
 export function removeNote(id) {
   return {
     type: REMOVE_NOTE,
-    id
-  }
+    id,
+  };
 }
 
 export function updateNote(id, body) {
   return {
     type: UPDATE_NOTE,
     id,
-    body
-  }
+    body,
+  };
 }
 
 export function receiveNotes(notes) {
   return {
     type: RECEIVE_NOTES,
-    notes
-  }
+    notes,
+  };
 }
 
 export function receiveNote(id) {
   return {
     type: RECEIVE_NOTE,
-    id
-  }
+    id,
+  };
 }
