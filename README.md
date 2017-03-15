@@ -3,6 +3,10 @@ NotesApp
 
 A simple note taking application using React with Redux and interacting with a HTTP RESTful API.
 
+![notes list](http://imgur.com/qV0vrtw.png)
+![new note](http://imgur.com/ALOBpRZ.png)
+![edit note](http://imgur.com/zxeyjVv.png)
+
 Features
 ========
 
