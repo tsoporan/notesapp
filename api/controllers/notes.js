@@ -22,7 +22,7 @@ const update = (req, res) => {
   .then((note) => {
     /* eslint no-param-reassign: ["error", { "props": false }] */
     note.body = req.body.text;
-    note.save();
+    return note.save();
   })
   .then(note => res.json(note))
   .catch((e) => { throw new Error(e); });
