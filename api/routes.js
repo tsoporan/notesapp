@@ -6,15 +6,21 @@ const apiRouter = express.Router();
 
 apiRouter.get('/', (req, res) => {
   res.send(`
-    Welcome to the Notes API, nothing to see here specifically.
+    <div>
+    <p>
+      Welcome to the Notes API, nothing to see here specifically.
+    </p>
 
-    Please use the API methods:
-      /api/notes - GET : Retrieve a list of latest notes, optionally pass limit and order GET params
-      /api/notes/create - POST: Create a note
-      /api/notes/<id> - GET: Retrieve a note
-      /api/notes/<id> - PUT: Update a note
-      /api/notes/<id> - DELETE: Removes a note
-  `);
+    <p>Please use the API methods:</p>
+      <ul>
+        <li>/api/notes - GET : Retrieve a list of latest notes, optionally pass limit and order GET params</li>
+        <li>/api/notes/create - POST: Create a note</li>
+        <li>/api/notes/<id> - GET: Retrieve a note</li>
+        <li>/api/notes/<id> - PUT: Update a note</li>
+        <li>/api/notes/<id> - DELETE: Removes a note</li>
+      </ul>
+    </div>
+    `);
 });
 
 apiRouter.get('/notes', notesCtrl.list);
