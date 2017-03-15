@@ -5,8 +5,10 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import fetch from 'isomorphic-fetch';
 import moment from 'moment';
 import { removeNote } from '../../actions/notes';
+import { API_BASE_URL } from '../../config';
 import '../../styles/Notes.css';
 
 class NotesListItem extends Component {
@@ -19,14 +21,27 @@ class NotesListItem extends Component {
   }
 
   handleRemove(e) {
-      console.log('handle remove', this.props.id);
       e.preventDefault();
 
-      this.props.dispatch(
-        removeNote(
-          this.props.id
-        )
-      )
+      const dispatch = this.props.dispatch; 
+      const noteId = this.props.id;
+      const headers = new Headers({
+        'Content-Type': 'application/x-www-form-urlencoded'
+      })
+
+      // Remove from server then update store
+      fetch(`${API_BASE_URL}/notes/${noteId}`, {
+        method: 'DELETE',
+        headers: headers
+      })
+        .then(response => response.json())
+        .then((json) => {
+          dispatch(
+            removeNote(
+              noteId
+            )
+          )
+      });
   }
 
   render() {
@@ -39,7 +54,7 @@ class NotesListItem extends Component {
 
           <div className="card-content">
             <div className="content">
-                {this.props.text.length > 140 ? this.props.text.substring(0, 140) + ' ...' : this.props.text  }
+                {this.props.body.length > 140 ? this.props.body.substring(0, 140) + ' ...' : this.props.body  }
             </div>
           </div>
 
@@ -54,8 +69,8 @@ class NotesListItem extends Component {
 }
 
 NotesListItem.propTypes = {
-  text: React.PropTypes.string,
-  dateCreated: React.PropTypes.number
+  body: React.PropTypes.string,
+  dateCreated: React.PropTypes.string
 };
 
 NotesListItem = connect()(NotesListItem);

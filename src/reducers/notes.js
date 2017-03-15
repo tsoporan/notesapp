@@ -13,8 +13,8 @@ function noteApp(state = [] , action) {
           ...state.notes,
           // Newest note appended
           {
-            id: action.id,
-            text: action.text,
+            _id: action.id,
+            body: action.body,
             dateCreated: action.dateCreated
           }
         ]
@@ -22,6 +22,7 @@ function noteApp(state = [] , action) {
 
     case 'REMOVE_NOTE':
       // Removes a specific note
+      // TODO: Do something with these undefineds
 
       if (!action.id) {
         return undefined;
@@ -29,7 +30,7 @@ function noteApp(state = [] , action) {
 
       // Filter only the ones we want
       const filtered = state.notes.filter((note) => {
-        return note.id !== action.id;
+        return note._id !== action.id;
       });
 
       return Object.assign({}, state, {
@@ -38,36 +39,48 @@ function noteApp(state = [] , action) {
 
     case 'UPDATE_NOTE':
       // Updates a specific note, that is, its text
+      // TODO: Do something with these undefineds
 
-      if (!(action.id && action.text)) {
+      if (!(action.id && action.body)) {
         return undefined;
       }
 
-      const foundNote = state.notes.find((note) => {
-        return note.id === action.id;
-      });
-
-      if (!foundNote) { return undefined; }
-
-      // Update with new text
-      foundNote.text = action.text;
-
       const excluded = state.notes.filter((note) => {
-          return note.id !== action.id;
+        return note._id !== action.id;
       });
 
-      // Return a new notes array which is the old notes + the 
-      // updated note appended.
       return Object.assign({}, state, {
         notes: [
           ...excluded,
+          // This is the same note we just received it fresh from the API
           {
-            id: foundNote.id,
-            text: foundNote.text,
-            dateCreated: foundNote.dateCreated
+            _id: action.id,
+            body: action.body,
+            dateCreated: action.dateCreated
           }
         ]
       });
+
+    case 'RECEIVE_NOTES':
+      // Received notes from the server, append them 
+      // to the existing notes.
+
+      if (!action.notes) {
+        return state;
+      }
+
+      return Object.assign({}, state, {
+        fetchedInitial: true,
+        notes: [
+          ...state.notes,
+          ...action.notes,
+        ]
+      });
+
+    case 'RECEIVE_NOTE':
+      // Receive a single note, i.e hitting a specific route without loading entire list
+      // TODO: Implement this
+      return state;
 
     default:
       return state;

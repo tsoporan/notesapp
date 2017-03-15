@@ -6,14 +6,15 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { removeNote, updateNote } from '../../actions/notes';
 import { Redirect } from 'react-router-dom';
-
+import fetch from 'isomorphic-fetch';
+import { API_BASE_URL } from '../../config';
 import '../../styles/Notes.css';
 
 
 const getNote = (notes, id) => {
   // Returns a specific note
   return notes.find((note) => {
-    return note.id === id;
+    return note._id === id;
   });
 
 };
@@ -39,7 +40,7 @@ class NotesDetail extends Component {
     this.state = {
       posted: false,
       error: '',
-      text: props.note.text,
+      body: props.note.body,
       newText: '',
     }
   }
@@ -59,21 +60,36 @@ class NotesDetail extends Component {
     }
 
     // Only if text differs do we save
-    if (this.state.newText === this.state.text) {
+    if (this.state.newText === this.state.body) {
       this.setState({ error: 'Text hasn\'t changed!' })
       return;
     }
 
-    // Trigger update in store
-    this.props.dispatch(
-      updateNote(
-        this.props.match.params.id,
-        this.state.newText,
-      )
-    )
+    const dispatch = this.props.dispatch;
+    const noteId = this.props.match.params.id;
+    const headers = new Headers({
+      'Content-Type': 'application/x-www-form-urlencoded'
+    });
 
-    // Redirect when we're done
-    this.setState({ posted: true, error: '' });
+
+    // Update server then update the store
+    fetch(`${API_BASE_URL}/notes/${noteId}`, {
+      method: 'PUT',
+      headers: headers,
+      body: "text="+encodeURIComponent(this.state.newText)
+    })
+    .then(response => response.json())
+    .then((json) => {
+
+      dispatch(
+        updateNote(
+          noteId,
+          this.state.newText
+        )
+      )
+      // Redirect when we're done
+      this.setState({ posted: true, error: '' });
+    });
 
   }
 
@@ -85,15 +101,28 @@ class NotesDetail extends Component {
   handleRemove(e) {
     e.preventDefault();
 
-    // Triger removing from store
-    this.props.dispatch(
-      removeNote(
-        this.props.match.params.id
-      )
-    )
+    const dispatch = this.props.dispatch; 
+    const noteId = this.props.match.params.id;
+    const headers = new Headers({
+      'Content-Type': 'application/x-www-form-urlencoded'
+    })
 
-    // Redirect when we're done
-    this.setState({ posted: true })
+    // Remove from server first then update the store
+    fetch(`${API_BASE_URL}/notes/${noteId}`, {
+      method: 'DELETE',
+      headers: headers
+    })
+      .then(response => response.json())
+      .then((json) => {
+        dispatch(
+          removeNote(
+            noteId
+          )
+        )
+
+        // Redirect when we're done
+        this.setState({ posted: true })
+      });
 
   }
 
@@ -108,7 +137,7 @@ class NotesDetail extends Component {
 
           <form onSubmit={this.handleSubmit}>
               <p className="control">
-                <textarea className="textarea" onChange={this.handleChange} defaultValue={this.state.text} />
+                <textarea className="textarea" onChange={this.handleChange} defaultValue={this.state.body} />
                 { this.state.error && this.state.error }
               </p>
 

@@ -3,13 +3,11 @@
  */
 
 import React, { Component } from 'react';
-
-import { v4 } from 'node-uuid';
-
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-
 import { addNote } from  '../../actions/notes';
+import { API_BASE_URL } from '../../config';
+import fetch from 'isomorphic-fetch';
 import '../../styles/Notes.css';
 
 class NotesNew extends Component {
@@ -20,37 +18,51 @@ class NotesNew extends Component {
     console.log('props', props);
 
     // Keep track of local text changes
-    this.state = {text: '', error: '', posted: false};
+    this.state = {body: '', error: '', posted: false};
 
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
   }
 
   handleChange(e) {
-    this.setState({ text: e.target.value });
+    this.setState({ body: e.target.value });
   }
 
   handleSubmit(e) {
     e.preventDefault();
 
     // Store on server 
-    if (!this.state.text) {
+    if (!this.state.body) {
       this.setState({ error: 'Nothing to submit!' });
       return;
     } else {
 
-      this.props.dispatch(
-        addNote(
-          v4(),
-          this.state.text,
-          Date.now(),
-        )
-      );
+      const dispatch = this.props.dispatch;
 
-      this.setState({ text: '', error: '', posted: true });
+      const headers = new Headers({
+        'Content-Type': 'application/x-www-form-urlencoded'
+      })
+
+      fetch(`${API_BASE_URL}/notes/create/`, {
+        method: 'POST',
+        headers: headers,
+        body: "text="+encodeURIComponent(this.state.body)
+      })
+        .then(response => response.json())
+        .then((json) => {
+
+          dispatch(
+            addNote(
+              json._id,
+              json.body,
+              json.dateCreated
+            )
+          )
+
+          this.setState({ body: '', error: '', posted: true });
+        });
     }
 
-    console.log('adding note with:', this.state.text);
   }
 
   render() {
@@ -63,7 +75,7 @@ class NotesNew extends Component {
 
           <form onSubmit={this.handleSubmit}>
             <p className="control">
-              <textarea className="textarea" value={this.state.text} onChange={this.handleChange} />
+              <textarea className="textarea" value={this.state.body} onChange={this.handleChange} />
               { this.state.error && <strong>{this.state.error}</strong> }
             </p>
 
