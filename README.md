@@ -5,6 +5,16 @@ A simple note taking application using React with Redux and interacting with a H
 
 ![notes list](http://imgur.com/qV0vrtw.png)
 
+Getting Started
+===============
+
+Note: Requires ```mongodb``` server to be running on port ```:27017```, we also require ```npm``` or ```yarn```
+
+1. Clone repo and go into folder
+2. ```yarn install```
+3. Fire up both ```yarn start-api```(server) and ```yarn start```(client) 
+4. Add some notes
+
 Features
 ========
 
