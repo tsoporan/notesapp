@@ -43,3 +43,9 @@ Server:
 - MongoDB
 - Babel Node
 - Morgan (logging)
+
+Todo
+====
+
+- Use Jest for tests
+- Host
