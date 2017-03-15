@@ -1,7 +1,7 @@
 NotesApp
 ========
 
-A simple note taking application using React with Redux and interacting with a HTTP RESTful API.
+A simple note taking application using: ES6, React, Redux and an HTTP RESTful API.
 
 ![notes list](http://imgur.com/qV0vrtw.png)
 
@@ -34,6 +34,8 @@ Client:
 - moment (dates)
 - isomorphic-fetch (fetch API)
 - Bulma CSS Framework
+- Webpack
+
 
 Server:
 - ExpressJS
